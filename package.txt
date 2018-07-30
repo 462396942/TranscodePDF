@@ -1,0 +1,5 @@
+django
+python-docx
+uwsgi
+requests
+django-cors-headers
