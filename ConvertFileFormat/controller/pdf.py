@@ -7,6 +7,7 @@ from contextlib import closing
 from ConvertFileFormat import pdfconv
 from Storage.controller.upload import upload
 from Repository import models
+from ConvertFileFormat.controller import checkFileType
 
 def get_FileMD5(filePath):
     MD5_Object = hashlib.md5()
@@ -26,7 +27,7 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
 			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
-		else:
+		elif os.path.splitext(os.path.basename(sourcefile))[1] in [".html"]:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
 			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 
@@ -98,7 +99,14 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 		with open(temporaryFileName, 'wb') as f:
 			f.write(session.content)
 
+		# 判断文件类型
+		FileType = checkouFileType.filetype(temporaryFileName)
+		if FileType or not FileType in ["doc", "docx", "html"]:
+			ret = {"status": "failed", "status_code": "503", "description": "Unsupported parsing file format {}.".format(FileType)}
+			return ret
+
 		md5Str = get_FileMD5(temporaryFileName)
+
 		if not mp:
 			obj = models.MD5.objects.filter(file_source_md5=md5Str)
 
