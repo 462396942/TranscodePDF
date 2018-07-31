@@ -17,7 +17,7 @@ from django.urls import path, re_path, include
 from RestAPI.views import (
     swaggerAPI
 )
-
+handler404 = swaggerAPI.SwaggerAPI
 urlpatterns = [
  	re_path('^api/v1/', include('RestAPI.urls')),
  	path('swaggerapi', swaggerAPI.SwaggerAPI, name="api-swaggerapi"),

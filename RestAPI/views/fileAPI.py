@@ -32,10 +32,12 @@ def GeneratePDF(request):
 				"format": "JSON",
 				"description": "Process files into PDF format.",
 				"parameter1": {
+					
+					"fileMD5": "...",
 					"type": "content",
 					"fileName": "...",
 					"fileContent": "base64Str",
-					"fileMD5": "...",
+					
 				},
 				"parameter2": {
 					"type": "url",
@@ -68,19 +70,17 @@ def GeneratePDF(request):
 			ret = {"status": "failed", "status_code": "503", "description": "Lack of necessary data '{}'.".format(", ".join(_emptyData))}
 			return JsonResponse(ret)
 
-		# print(transportType,fileName,fileContent,fileMD5)
-		print(type(transportType),type(fileName),type(fileContent),type(fileMD5))
 		# Run main
 		if transportType == "content":
-			main(
+			ret = json.loads(main(
 				transport_type=transportType, 
 				fileName=fileName, 
 				fileContent=fileContent, 
 				fileMD5=fileMD5
-			)
+			))
 		else:
-			main(
+			ret = json.loads(main(
 				transport_type=transportType, 
-				url=url
-			)
+				url=_url
+			))
 	return JsonResponse(ret)
