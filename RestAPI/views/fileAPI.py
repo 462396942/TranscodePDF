@@ -32,6 +32,7 @@ def GeneratePDF(request):
 				"parameter1": {
 					"type": "url",
 					"url": "...",
+					"mandatory_parsing": "False",
 				}
 			}
 		]
@@ -51,6 +52,8 @@ def GeneratePDF(request):
 			fileMD5 = ReceiveData["fileMD5"] if "fileMD5" in ReceiveData else _emptyData.append("fileMD5")
 		elif transportType == "url":
 			_url = ReceiveData["url"] if "url" in ReceiveData else _emptyData.append("url")
+			mp = ReceiveData["mandatory_parsing"] if "mandatory_parsing" in ReceiveData else "False"
+			mp = True if mp == "True" else False
 		else:
 			ret = {"status": "failed", "status_code": "503", "description": "Incorrect transfer, specify the correct 'type' is 'content or url'."}
 			return JsonResponse(ret)
@@ -64,6 +67,7 @@ def GeneratePDF(request):
 		if transportType == "url":
 			ret = main(
 				transport_type=transportType, 
-				url=_url
+				url=_url,
+				mp=mp
 			)
 	return JsonResponse(ret)

@@ -49,7 +49,43 @@ def checkFileCoding_inTXT(filePath):
 	else:
 		return
 
-def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None):
+
+def _TranscodePDF(url, md5Str, sourceFile):
+	# 源文件目录
+	fileName=os.path.basename(url)
+	sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
+
+	# 目标文件目录
+	sourceFileName_inPDF = "".join(os.path.basename(url).split(".")[:-1]) + ".pdf"
+	targetFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', sourceFileName_inPDF)
+
+	# Get Url Subdirectories
+	sourceFileSubPath = "/".join(url.split("/")[3:-1])
+
+	# 检测文件是否 TXT，如果是则重写文件编码
+	checkFileCoding_inTXT(sourceFile)
+	
+	# 获取文件编码
+	fileCoding = getFileCoding(sourceFile)
+	
+	# 生成 PDF
+	ret =  json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath)))
+
+	# 写入数据库
+	data = {
+		"file_source_md5": md5Str,
+		"file_source_address": url,
+		"file_pdf_md5": ret["md5"],
+		"file_pdf_address": ret["account_url"],
+	}
+	try:
+		models.MD5.objects.create(**data)
+	except:
+		models.MD5.objects.filter(file_source_md5=md5Str).delete()
+		_TranscodePDF(url, md5Str, sourceFile)
+	return ret
+
+def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None, mp=None):
 
 	if transport_type == "content":
 		
@@ -63,46 +99,18 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 			f.write(session.content)
 
 		md5Str = get_FileMD5(temporaryFileName)
-		obj = models.MD5.objects.filter(file_source_md5=md5Str)
+		if not mp:
+			obj = models.MD5.objects.filter(file_source_md5=md5Str)
 
-		# 校验是否已经被解析
-		if obj.exists():
-			PDFAddress = obj.last().file_pdf_address
-			print(PDFAddress,type(PDFAddress))
-			ret = {
-				"account_url": PDFAddress,
-			}
-			return ret
-
+			# 校验是否已经被解析
+			if obj.exists():
+				PDFAddress = obj.last().file_pdf_address
+				ret = {
+					"account_url": PDFAddress,
+				}
+				return ret
+			else:
+				return _TranscodePDF(url, md5Str, temporaryFileName)
 		else:
-			# 源文件目录
-			fileName=os.path.basename(url)
-			sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
-
-			# 目标文件目录
-			sourceFileName_inPDF = "".join(os.path.basename(url).split(".")[:-1]) + ".pdf"
-			targetFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', sourceFileName_inPDF)
-
-			# 目标文件最终存储 Url
-			sourceFileSubPath = "/".join(url.split("/")[3:-1])
-			storagePDFAddress = os.path.join(conf.settings.NGINX_MIRROR_ADDRESS, sourceFileTimePath, sourceFileName_inPDF)
-
-			# 检测文件是否 TXT，如果是则重写文件编码
-			checkFileCoding_inTXT(temporaryFileName)
-			
-			# 获取文件编码
-			fileCoding = getFileCoding(temporaryFileName)
-			
-			# 生成 PDF
-			ret =  json.loads(FileToPDF(temporaryFileName, targetFilePath, fileCoding, sourceFileSubPath))
-
-			# 写入数据库
-			data = {
-				"file_source_md5": md5Str,
-				"file_source_address": url,
-				"file_pdf_md5": ret["md5"],
-				"file_pdf_address": ret["account_url"],
-			}
-			models.MD5.objects.create(**data)
-
-			return ret
+			return _TranscodePDF(url, md5Str, temporaryFileName)
+		
