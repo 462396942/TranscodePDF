@@ -73,7 +73,7 @@ def bytes2hex(bytes):
 
  
 def filetype(filePath):
-	binfile = open(filename, 'rb')
+	binfile = open(filePath, 'rb')
 	bins = binfile.read(20)
 	binfile.close()
 	bins = bytes2hex(bins)

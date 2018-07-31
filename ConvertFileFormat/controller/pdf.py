@@ -99,11 +99,11 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 		with open(temporaryFileName, 'wb') as f:
 			f.write(session.content)
 
-		# 判断文件类型
-		FileType = checkouFileType.filetype(temporaryFileName)
-		if FileType or not FileType in ["doc", "docx", "html"]:
-			ret = {"status": "failed", "status_code": "503", "description": "Unsupported parsing file format {}.".format(FileType)}
-			return ret
+		# 判断文件类型(格式杂乱不建议使用)
+		# FileType = checkFileType.filetype(temporaryFileName)
+		# if FileType or not FileType in ["doc", "docx", "html"]:
+		# 	ret = {"status": "failed", "status_code": "503", "description": "Unsupported parsing file format '{}'.".format(FileType)}
+		# 	return ret
 
 		md5Str = get_FileMD5(temporaryFileName)
 
