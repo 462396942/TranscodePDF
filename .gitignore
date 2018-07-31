@@ -30,8 +30,6 @@ tests
 
 cache/runtime/
 logs/
-/static/temporary/*
-/static/temporary/*
 
 # Thumbnails
 ._*
