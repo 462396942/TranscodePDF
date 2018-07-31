@@ -20,3 +20,7 @@ services:
             MYSQL_ROOT_PASSWORD: example.org
             TZ: Asia/Shanghai
         container_name: transcode-mysql
+        volumes:
+          - mysql:/var/lib/mysql
+volumes:
+    mssql:
