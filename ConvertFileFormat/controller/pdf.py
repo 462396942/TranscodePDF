@@ -21,14 +21,14 @@ def get_FileMD5(filePath):
     md5Code = MD5_Object.hexdigest()
     return  md5Code
 
-def FileToPDF(sourcefile, tregetfile, fileCoding, path):
+def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 	if os.path.isfile(sourcefile):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path)
+			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 		else:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path)
+			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 
 
 def getFileCoding(filePath):
@@ -84,7 +84,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 			targetFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', sourceFileName_inPDF)
 
 			# 目标文件最终存储 Url
-			sourceFileTimePath = "/".join(url.split("/")[3:-1])
+			sourceFileSubPath = "/".join(url.split("/")[3:-1])
 			storagePDFAddress = os.path.join(conf.settings.NGINX_MIRROR_ADDRESS, sourceFileTimePath, sourceFileName_inPDF)
 
 			# 检测文件是否 TXT，如果是则重写文件编码
@@ -94,7 +94,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 			fileCoding = getFileCoding(temporaryFileName)
 			
 			# 生成 PDF
-			ret =  json.loads(FileToPDF(temporaryFileName, targetFilePath, fileCoding, sourceFileTimePath))
+			ret =  json.loads(FileToPDF(temporaryFileName, targetFilePath, fileCoding, sourceFileSubPath))
 
 			# 写入数据库
 			data = {
