@@ -2,10 +2,12 @@
 # -*- coding:utf-8 -*-
 
 from django import conf
-import os, time, datetime, re, shutil, base64, requests, hashlib, json
+import os, time, datetime, re, shutil, base64, requests, hashlib, json, chardet
 from contextlib import closing
 from ConvertFileFormat import pdfconv
 from Storage.controller.upload import upload
+from Repository import models
+
 
 NGINX_UOLOAD_ADDRESS = "http://47.95.219.151/upload"
 
@@ -22,68 +24,84 @@ def get_FileMD5(filePath):
     md5Code = MD5_Object.hexdigest()
     return  md5Code
 
-def Check_fileName_in_MD5(filePath):
-	md5Str = get_FileMD5(filePath)
-	if os.path.basename(filePath).split("_")[0] == md5Str:
-		fileName = os.path.basename(filePath.split("_")[1])
-		os.rename(os.path.join(os.path.dirname(filePath), os.path.basename(filePath)), os.path.join(os.path.dirname(filePath), fileName))
-	else:
-		fileName = os.path.basename(filePath)
-	return fileName
-
-
-def FileToPDF(sourcefile, tregetfile):
+def FileToPDF(sourcefile, tregetfile, fileCoding):
 	if os.path.isfile(sourcefile):
-		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt",".html"]:
-			pdfconv.convert_document2pdf(sourcefile, tregetfile)
-			return upload(url=NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile)
-		else:
+		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
 			return upload(url=NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile)
+		else:
+			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
+			return upload(url=NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile)
 
-def CheckExistedPDF(url):
-	
-	session = requests.get(url)
-	if session.status_code == 200:
-		
-		return False
+
+def getFileCoding(filePath):
+	with open(filePath, 'rb') as f:
+		obj = f.read()
+	return chardet.detect(obj)["encoding"]
+
+def checkFileCoding_inTXT(filePath):
+	if os.path.splitext(os.path.basename(filePath))[1] in [".txt"]:
+		try:
+			with open(filePath, 'r', encoding='gbk') as f:
+				SourceContent = f.read()
+			os.remove(filePath)
+			with open(filePath, 'w', encoding='utf-8') as f:
+				f.write(SourceContent)
+		except UnicodeDecodeError:
+			pass
 	else:
-		return True
+		return
 
 def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None):
 
 	if transport_type == "content":
 
 		
-		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
-
-		with open(temporaryFileName, 'wb') as f:
-			f.write(base64.b64decode(fileContent))
-
-		fileName = Check_fileName_in_MD5(os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName))
-		sourceFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
-		pdfFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', "".join(fileName.split(".")[:-1]) + ".pdf")
-		return FileToPDF(sourceFileName, pdfFileName)
+		pass
 	
 	else:
-		sourceFileName_inPDF = "".join(os.path.basename(url).split(".")[:-1]) + ".pdf"
-		sourceFileTimePath = os.path.basename(os.path.dirname(url))
-		check_existedPDF_url = os.path.join("http://47.95.219.151", "firmware", "resume", "pdf", sourceFileTimePath, sourceFileName_inPDF)
+		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url))
+		session = requests.get(url=url)
 
-		if CheckExistedPDF(check_existedPDF_url):
-			temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url))
+		with open(temporaryFileName, 'wb') as f:
+			f.write(session.content)
 
-			session = requests.get(url=url)
-
-			with open(temporaryFileName, 'wb') as f:
-				f.write(session.content)
-
-			fileName = Check_fileName_in_MD5(os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url)))
-			sourceFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
-			pdfFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', "".join(fileName.split(".")[:-1]) + ".pdf")
-			return FileToPDF(sourceFileName, pdfFileName)
-		else:
+		md5Str = get_FileMD5(temporaryFileName)
+		obj = models.MD5.objects.filter(file_source_md5=md5Str)
+		if obj.exists():
+			PDFAddress = obj.values("file_pdf_address")
 			ret = {
 				"account_url": check_existedPDF_url,
 			}
-			return json.dumps(ret)
+			return json.dumps(ret)		
+
+		else:
+			# 源文件目录
+			fileName=os.path.basename(url)
+			sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
+
+			# 目标文件目录
+			sourceFileName_inPDF = "".join(os.path.basename(url).split(".")[:-1]) + ".pdf"
+			targetFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', sourceFileName_inPDF)
+
+			# 目标文件最终存储 Url
+			sourceFileTimePath = "/".join(url.split("/")[3:-1])
+			storagePDFAddress = os.path.join("http://47.95.219.151", sourceFileTimePath, sourceFileName_inPDF)
+
+			# 检测文件是否 TXT，如果是则重写文件编码
+			checkFileCoding_inTXT(temporaryFileName)
+			
+			# 获取文件编码
+			fileCoding = getFileCoding(temporaryFileName)
+
+			# 生成 PDF
+			FileToPDF(temporaryFileName, targetFilePath, fileCoding)
+			
+
+			
+
+			# 
+			# 
+			# pdfFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', "".join(fileName.split(".")[:-1]) + ".pdf")
+			# return 
+			

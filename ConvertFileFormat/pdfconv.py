@@ -223,6 +223,22 @@ def _convert_unoconv2pdf(input_path, output_path):
     except OSError:
         raise
 
+def _convert_wkhtmltopdf(input_path, output_path, fileCoding):
+    try:
+        env = os.environ.copy()
+        if 'PYTHONPATH' in env:
+            del env['PYTHONPATH']
+        if fileCoding:
+            p = subprocess.Popen(['wkhtmltopdf', '--encoding', fileCoding, '{}'.format(input_path), '{}'.format(os.path.dirname(output_path))],stdout=subprocess.PIPE, env=env, shell=False)
+        else:
+            p = subprocess.Popen(['wkhtmltopdf', '{}'.format(input_path), '{}'.format(os.path.dirname(output_path))],stdout=subprocess.PIPE, env=env, shell=False)
+        p.communicate()
+        p.wait()
+    except subprocess.CalledProcessError:
+        raise
+    except OSError:
+        raise
+
 __dispatch  = {
     'application/msword': convert_document2pdf,
     'application/ms-word': convert_document2pdf,

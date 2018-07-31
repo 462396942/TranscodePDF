@@ -1,4 +1,4 @@
-FROM slzcc/liboffice:latest
+FROM slzcc/wkhtmltopdf:liboffice
 
 RUN pip3 install --upgrade pip && \
     git clone https://gitee.com/shileizcc_admin/TranscodePDF.git /TranscodePDF
@@ -14,7 +14,7 @@ ENV MYSQL_DATABASE=resume \
     MYSQL_PORT=3306 \
     SOLR_SERVER_URL="http://172.17.0.3:8983/"
 
-EXPOSE 8088
+EXPOSE 8089
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 

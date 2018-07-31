@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # 'corsheaders',
     'ConvertFileFormat',
     'RestAPI',
+    'Repository',
+
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,27 @@ WSGI_APPLICATION = 'TranscodePDF.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('MYSQL_HOST'),
+        'PORT': os.getenv('MYSQL_PORT'),
+    }
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'check_md5',
+#         'USER': 'check_md5',
+#         'PASSWORD': 'check_md5',
+#         'HOST': '10.30.0.41',
+#         'PORT': '3306',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
