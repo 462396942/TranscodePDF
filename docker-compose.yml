@@ -2,14 +2,20 @@ version: '3'
 services:
     resume2:
         image: slzcc/django:transcode-pdf-uwsgi-v1
-        container_name: transcode-server
+        container_name: transcode
         ports:
           - 8089:8089
         environment:
-            MYSQL_DATABASE: resume
-            MYSQL_USER: resume
-            MYSQL_PASSWORD: resume
-            MYSQL_HOST: "10.30.0.41"
+            MYSQL_DATABASE: check_md5
+            MYSQL_USER: check_md5
+            MYSQL_PASSWORD: check_md5
+            MYSQL_HOST: "mysql"
             MYSQL_PORT: 3306
-            NGINX_MIRROR_ADDRESS: "http://127.0.0.1/"
+            NGINX_MIRROR_ADDRESS: "http://10.30.0.41/"
+            TZ: Asia/Shanghai
         hostname: "example.org"
+    mysql:
+        image: mysql:5.6
+        environment:
+            MYSQL_ROOT_PASSWORD: example.org
+            TZ: Asia/Shanghai
