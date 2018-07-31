@@ -21,14 +21,14 @@ def get_FileMD5(filePath):
     md5Code = MD5_Object.hexdigest()
     return  md5Code
 
-def FileToPDF(sourcefile, tregetfile, fileCoding):
+def FileToPDF(sourcefile, tregetfile, fileCoding, path):
 	if os.path.isfile(sourcefile):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile)
+			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path)
 		else:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile)
+			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path)
 
 
 def getFileCoding(filePath):
