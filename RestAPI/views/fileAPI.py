@@ -33,7 +33,14 @@ def GeneratePDF(request):
 					"type": "url",
 					"url": "...",
 					"mandatory_parsing": "False",
-				}
+				},
+				"parameter2": {
+					"fileMD5": "...",
+					"type": "content",
+					"fileName": "...",
+					"fileContent": "base64Str",
+					"filePath": "../../.."
+				},
 			}
 		]
 	}
@@ -49,7 +56,8 @@ def GeneratePDF(request):
 		if transportType == "content":
 			fileName = ReceiveData["fileName"] if "fileName" in ReceiveData else _emptyData.append("fileName")
 			fileContent = ReceiveData["fileContent"] if "fileContent" in ReceiveData else _emptyData.append("fileContent")
-			fileMD5 = ReceiveData["fileMD5"] if "fileMD5" in ReceiveData else _emptyData.append("fileMD5")
+			fileMD5 = ReceiveData["fileMD5"] if "fileMD5" in ReceiveData else ""
+			filePath = ReceiveData["filePath"] if "filePath" in ReceiveData else _emptyData.append("filePath")
 		elif transportType == "url":
 			_url = ReceiveData["url"] if "url" in ReceiveData else _emptyData.append("url")
 			mp = ReceiveData["mandatory_parsing"] if "mandatory_parsing" in ReceiveData else "False"
@@ -64,7 +72,15 @@ def GeneratePDF(request):
 			return JsonResponse(ret)
 
 		# Run main
-		if transportType == "url":
+		if transportType == "content":
+			ret = main(
+				transport_type=transportType, 
+				fileName=fileName, 
+				fileContent=fileContent, 
+				fileMD5=fileMD5,
+				filePath=filePath
+			)
+		elif transportType == "url":
 			ret = main(
 				transport_type=transportType, 
 				url=_url,

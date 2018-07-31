@@ -86,11 +86,20 @@ def _TranscodePDF(url, md5Str, sourceFile):
 		_TranscodePDF(url, md5Str, sourceFile)
 	return ret
 
-def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None, mp=None):
+def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath=None,url=None, mp=None):
 
 	if transport_type == "content":
 		
-		pass
+		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
+
+		with open(temporaryFileName, 'wb') as f:
+			f.write(base64.b64decode(fileContent))
+
+		checkFileCoding_inTXT(temporaryFileName)
+		fileCoding = getFileCoding(temporaryFileName)
+
+		pdfFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', "".join(fileName.split(".")[:-1]) + ".pdf")
+		return json.loads(FileToPDF(temporaryFileName, pdfFileName, fileCoding, os.path.join(filePath)))
 	
 	else:
 		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url))
