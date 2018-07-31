@@ -229,10 +229,9 @@ def _convert_wkhtmltopdf(input_path, output_path, fileCoding):
         if 'PYTHONPATH' in env:
             del env['PYTHONPATH']
         if fileCoding:
-            p = subprocess.Popen(['wkhtmltopdf', '--encoding', fileCoding, '{}'.format(input_path), '{}'.format(os.path.dirname(output_path))],stdout=subprocess.PIPE, env=env, shell=False)
+            p = subprocess.Popen(['wkhtmltopdf', '--encoding', fileCoding, '{}'.format(input_path), '{}'.format(output_path)],stdout=subprocess.PIPE, env=env, shell=False)
         else:
-            p = subprocess.Popen(['wkhtmltopdf', '{}'.format(input_path), '{}'.format(os.path.dirname(output_path))],stdout=subprocess.PIPE, env=env, shell=False)
-        p.communicate()
+            p = subprocess.Popen(['wkhtmltopdf', '{}'.format(input_path), '{}'.format(output_path)],stdout=subprocess.PIPE, env=env, shell=False)
         p.wait()
     except subprocess.CalledProcessError:
         raise

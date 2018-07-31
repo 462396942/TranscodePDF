@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5hptdt!vq^y**@r-sovrhoofacwjhz0u)6ivvt_0g!j%@nuh27'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -141,6 +141,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+NGINX_MIRROR_ADDRESS = os.getenv('NGINX_MIRROR_ADDRESS')
+NGINX_UOLOAD_ADDRESS = os.path.join(NGINX_MIRROR_ADDRESS,"upload")
+
+
 # CORS Configuration
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True

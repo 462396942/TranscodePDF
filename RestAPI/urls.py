@@ -1,6 +1,6 @@
 from django.urls import path, re_path, include
 from RestAPI.views import (
-    swaggerAPI, fileAPI
+    fileAPI
 )
 
 # RestAPI

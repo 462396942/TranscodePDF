@@ -7,8 +7,6 @@ from ConvertFileFormat.controller.pdf import main
 import os, time, requests, json, datetime, re, shutil
 from django.utils.safestring import mark_safe
 
-ret = {"status": "seccuss", "status_code": "200"}
-
 def GetFileAPI(request):
 	ret = {
 		"apis":[
@@ -32,14 +30,6 @@ def GeneratePDF(request):
 				"format": "JSON",
 				"description": "Process files into PDF format.",
 				"parameter1": {
-					
-					"fileMD5": "...",
-					"type": "content",
-					"fileName": "...",
-					"fileContent": "base64Str",
-					
-				},
-				"parameter2": {
 					"type": "url",
 					"url": "...",
 				}
@@ -71,16 +61,9 @@ def GeneratePDF(request):
 			return JsonResponse(ret)
 
 		# Run main
-		if transportType == "content":
-			ret = json.loads(main(
-				transport_type=transportType, 
-				fileName=fileName, 
-				fileContent=fileContent, 
-				fileMD5=fileMD5
-			))
-		else:
-			ret = json.loads(main(
+		if transportType == "url":
+			ret = main(
 				transport_type=transportType, 
 				url=_url
-			))
+			)
 	return JsonResponse(ret)
