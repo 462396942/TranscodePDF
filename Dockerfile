@@ -1,7 +1,7 @@
 FROM slzcc/wkhtmltopdf:liboffice
 
 RUN pip3 install --upgrade pip && \
-    git clone https://gitee.com/shileizcc_admin/TranscodePDF.git /TranscodePDF
+    git clone -b database_model https://gitee.com/shileizcc_admin/TranscodePDF.git /TranscodePDF
 
 RUN pip install -r /TranscodePDF/package.txt
 
