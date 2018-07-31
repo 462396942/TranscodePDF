@@ -27,6 +27,7 @@ tests
 cache/runtime/
 logs/
 /static/firmware*/*
+/static/storage*/*
 
 # Thumbnails
 ._*
