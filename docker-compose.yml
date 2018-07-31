@@ -21,6 +21,6 @@ services:
             TZ: Asia/Shanghai
         container_name: transcode-mysql
         volumes:
-          - mysql:/var/lib/mysql
+          - mysql:/var/lib/mysql:rw
 volumes:
-    mssql:
+    mysql:
