@@ -94,7 +94,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, url=None
 			fileCoding = getFileCoding(temporaryFileName)
 			
 			# 生成 PDF
-			ret =  json.loads(FileToPDF(temporaryFileName, targetFilePath, fileCoding))
+			ret =  json.loads(FileToPDF(temporaryFileName, targetFilePath, fileCoding, sourceFileTimePath))
 
 			# 写入数据库
 			data = {
