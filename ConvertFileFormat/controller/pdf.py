@@ -51,7 +51,7 @@ def checkFileCoding_inTXT(filePath):
 		return
 
 
-def _TranscodePDF(url, md5Str, sourceFile):
+def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	# 源文件目录
 	fileName=os.path.basename(url)
 	sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
@@ -70,7 +70,10 @@ def _TranscodePDF(url, md5Str, sourceFile):
 	fileCoding = getFileCoding(sourceFile)
 	
 	# 生成 PDF
-	ret =  json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath)))
+	if filePath:
+		ret = json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(filePath)))
+	else:
+		ret = json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath)))
 
 	# 写入数据库
 	data = {
@@ -86,7 +89,7 @@ def _TranscodePDF(url, md5Str, sourceFile):
 		_TranscodePDF(url, md5Str, sourceFile)
 	return ret
 
-def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath=None,url=None, mp=None):
+def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath=None, url=None, mp=None):
 
 	if transport_type == "content":
 		
@@ -127,7 +130,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 				}
 				return ret
 			else:
-				return _TranscodePDF(url, md5Str, temporaryFileName)
+				return _TranscodePDF(url, md5Str, temporaryFileName, filePath=filePath)
 		else:
-			return _TranscodePDF(url, md5Str, temporaryFileName)
+			return _TranscodePDF(url, md5Str, temporaryFileName, filePath=filePath)
 		
