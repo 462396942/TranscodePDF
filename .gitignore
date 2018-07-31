@@ -5,6 +5,10 @@
 *.dll
 *.so
 *.dylib
+*.doc
+*.docx
+*.pdf
+*.txt
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -26,8 +30,8 @@ tests
 
 cache/runtime/
 logs/
-/static/firmware*/*
-/static/storage*/*
+/static/temporary/*
+/static/temporary/*
 
 # Thumbnails
 ._*
