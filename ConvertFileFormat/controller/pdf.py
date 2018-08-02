@@ -50,6 +50,14 @@ def checkFileCoding_inTXT(filePath):
 	else:
 		return
 
+def CheckExistedPDF(url):
+	
+	session = requests.get(url)
+	if session.status_code == 200:
+		
+		return False
+	else:
+		return True
 
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	# 源文件目录
@@ -124,11 +132,15 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 
 			# 校验是否已经被解析
 			if obj.exists():
-				PDFAddress = obj.last().file_pdf_address
-				ret = {
-					"account_url": PDFAddress,
-				}
-				return ret
+				PDFAddressUrl = obj.last().file_pdf_address
+				if CheckExistedPDF(PDFAddressUrl):
+					ret = {
+						"account_url": PDFAddressUrl,
+					}
+					return ret
+				else:
+					return _TranscodePDF(url, md5Str, temporaryFileName, filePath=filePath)
+				
 			else:
 				return _TranscodePDF(url, md5Str, temporaryFileName, filePath=filePath)
 		else:

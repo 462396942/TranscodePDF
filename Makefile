@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-VERSION := "2"
+VERSION := "3"
 build:
 	@docker build -t slzcc/django:transcode-pdf-uwsgi-v$(VERSION) . --no-cache
 push:
