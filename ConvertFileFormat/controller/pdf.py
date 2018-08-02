@@ -55,9 +55,9 @@ def CheckExistedPDF(url):
 	session = requests.get(url)
 	if session.status_code == 200:
 		
-		return False
-	else:
 		return True
+	else:
+		return False
 
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	# 源文件目录
