@@ -26,3 +26,5 @@ $ python3 manage.py createsuperuser
 ```
 $ python3 manage.py runserver 8089
 ```
+
+[Wiki Docs Url](https://wiki.shileizcc.com/confluence/display/CASE/Django+TranscodePDF)
