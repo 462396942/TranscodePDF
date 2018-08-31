@@ -1,6 +1,13 @@
 FROM slzcc/wkhtmltopdf:liboffice
 
-RUN pip3 install --upgrade pip && \
+RUN apt update && \
+	apt install -y mysql-client-core-5.7 && \
+	apt-get autoremove --purge --yes && \
+    rm --force --recursive \
+        /tmp/* \
+        /var/lib/apt/lists/*
+        
+RUN	pip3 install --upgrade pip && \
     git clone -b database_model https://gitee.com/shileizcc_admin/TranscodePDF.git /TranscodePDF
 
 RUN pip install -r /TranscodePDF/package.txt
