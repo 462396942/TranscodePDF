@@ -11,6 +11,7 @@ done
 
 >&2 echo "MySQL is up - executing command"
 
+python3 manage.py makemigrations
 python3 manage.py migrate
 
 sed -i "s/'%s\*\=%s' % (name,\ value)/'%s\="%s"'\ % (name,\ value.encode('utf-8'))/" /usr/local/lib/python3.5/site-packages/urllib3/fields.py
