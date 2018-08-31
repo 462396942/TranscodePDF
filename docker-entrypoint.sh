@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+set -e
 
 # https://docs.docker.com/compose/startup-order/
 host=$MYSQL_HOST
@@ -14,7 +14,7 @@ done
 >&2 echo "MySQL is up - executing command"
 
 
-isDatabaseTable=`mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e "show databases;" | grep "$MYSQL_DATABASE" | wc -l`
+isDatabaseTable=`mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e "show databases;" | egrep "^$MYSQL_DATABASE$" | wc -l`
 
 if [[ $isDatabaseTable -eq 0 ]]; then 
   echo "NOT Database, Perform create!"

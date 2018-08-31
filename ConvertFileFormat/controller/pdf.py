@@ -8,6 +8,19 @@ from ConvertFileFormat import pdfconv
 from Storage.controller.upload import upload
 from Repository import models
 from ConvertFileFormat.controller import checkFileType
+import socket
+import re
+
+def getIP(domain):
+	myaddr = socket.getaddrinfo(domain, 'http')
+	return myaddr[0][4][0]
+
+def isIP(str):
+    p = re.compile('^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$')
+    if p.match(str):
+        return True
+    else:
+        return False
 
 def get_FileMD5(filePath):
     MD5_Object = hashlib.md5()
@@ -113,6 +126,12 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 		return json.loads(FileToPDF(temporaryFileName, pdfFileName, fileCoding, os.path.join(filePath)))
 	
 	else:
+		domain = url.split("/")[2].split(":")[0]
+		domain_ip = ""
+		if not isIP(domain):
+			domain_ip = getIP(domain)
+			url = url.replace(domain, domain_ip)
+		
 		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url))
 		session = requests.get(url=url)
 
