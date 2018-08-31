@@ -1,21 +1,30 @@
 #!/bin/bash
-set -e
+set -x
 
 # https://docs.docker.com/compose/startup-order/
 host=$MYSQL_HOST
+MYSQL_ROOT_USER=$MYSQL_ROOT_USER
+MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
 
-until MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "$host" -e 'use resume;'; do
+until MYSQL_ROOT_USER=$MYSQL_ROOT_USER MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e 'show databases;'; do
   >&2 echo "MySQL is unavailable - sleeping"
   sleep 1
 done
 
 >&2 echo "MySQL is up - executing command"
 
+
+isDatabaseTable=`mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e "show databases;" | grep "$MYSQL_DATABASE" | wc -l`
+
+if [[ $isDatabaseTable -eq 0 ]]; then 
+  echo "NOT Database, Perform create!"
+  mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e "create database $MYSQL_DATABASE character set 'UTF8'"
+  mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" -h "$host" -e "grant all on $MYSQL_DATABASE.* to $MYSQL_USER@'%' identified by '$MYSQL_PASSWORD'"
+fi
+
 python3 manage.py makemigrations
-until python3 manage.py migrate; do
-  >&2 echo "There are other services using the database, waiting"
-  sleep 1
-done
+
+python3 manage.py migrate
 
 sed -i "s/'%s\*\=%s' % (name,\ value)/'%s\="%s"'\ % (name,\ value.encode('utf-8'))/" /usr/local/lib/python3.5/dist-packages/urllib3/fields.py
 
