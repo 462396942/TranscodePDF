@@ -23,6 +23,10 @@ def SwaggerAPI(request):
 				"path": "/api/v1/file/pdf",
 				"description": "Process files into PDF format."
 			},
+			{
+				"path": "/api/v1/file/word",
+				"description": "Receive word template and data, write data to word template back word."
+			},
 
 		]
 	}
