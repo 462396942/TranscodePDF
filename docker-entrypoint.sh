@@ -13,7 +13,7 @@ done
 
 python3 manage.py migrate
 
-sed -i "s/'%s\*\=%s' % (name,\ value)/'%s\="%s"'\ % (name,\ value.encode('utf-8'))/" /usr/local/lib/python3.7/site-packages/urllib3/fields.py
+sed -i "s/'%s\*\=%s' % (name,\ value)/'%s\="%s"'\ % (name,\ value.encode('utf-8'))/" /usr/local/lib/python3.5/site-packages/urllib3/fields.py
 
 exec uwsgi --socket 0.0.0.0:18089 \
       --chdir /TranscodePDF/ \
