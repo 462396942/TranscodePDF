@@ -12,7 +12,10 @@ done
 >&2 echo "MySQL is up - executing command"
 
 python3 manage.py makemigrations
-python3 manage.py migrate
+until python3 manage.py migrate; do
+  >&2 echo "There are other services using the database, waiting"
+  sleep 1
+done
 
 sed -i "s/'%s\*\=%s' % (name,\ value)/'%s\="%s"'\ % (name,\ value.encode('utf-8'))/" /usr/local/lib/python3.5/site-packages/urllib3/fields.py
 
