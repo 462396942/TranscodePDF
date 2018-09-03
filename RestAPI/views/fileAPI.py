@@ -84,14 +84,14 @@ def GeneratePDF(request):
 				fileName=fileName, 
 				fileContent=fileContent, 
 				fileMD5=fileMD5,
-				filePath=filePath
+				filePath=filePath,
 			)
 		elif transportType == "url":
 			ret = main(
 				transport_type=transportType, 
 				url=_url,
 				mp=mp,
-				filePath=filePath
+				filePath=filePath,
 			)
 	return JsonResponse(ret)
 

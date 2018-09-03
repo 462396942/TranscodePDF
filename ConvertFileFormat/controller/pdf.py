@@ -8,19 +8,7 @@ from ConvertFileFormat import pdfconv
 from Storage.controller.upload import upload
 from Repository import models
 from ConvertFileFormat.controller import checkFileType
-import socket
-import re
 
-def getIP(domain):
-	myaddr = socket.getaddrinfo(domain, 'http')
-	return myaddr[0][4][0]
-
-def isIP(str):
-    p = re.compile('^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$')
-    if p.match(str):
-        return True
-    else:
-        return False
 
 def get_FileMD5(filePath):
     MD5_Object = hashlib.md5()
@@ -78,7 +66,7 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
 
 	# 目标文件目录
-	sourceFileName_inPDF = "".join(os.path.basename(url).split(".")[:-1]) + ".pdf"
+	sourceFileName_inPDF = "".join(fileName.split(".")[:-1]) + ".pdf"
 	targetFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'storage', sourceFileName_inPDF)
 
 	# Get Url Subdirectories
@@ -92,9 +80,11 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	
 	# 生成 PDF
 	if filePath:
-		ret = json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(filePath)))
+		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(filePath))
+		ret = json.loads(response)
 	else:
-		ret = json.loads(FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath)))
+		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
+		ret = json.loads(response)
 
 	# 写入数据库
 	data = {
@@ -126,12 +116,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 		return json.loads(FileToPDF(temporaryFileName, pdfFileName, fileCoding, os.path.join(filePath)))
 	
 	else:
-		domain = url.split("/")[2].split(":")[0]
-		domain_ip = ""
-		if not isIP(domain):
-			domain_ip = getIP(domain)
-			url = url.replace(domain, domain_ip)
-		
+
 		temporaryFileName = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', os.path.basename(url))
 		session = requests.get(url=url)
 
