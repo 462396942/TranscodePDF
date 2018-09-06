@@ -104,17 +104,16 @@ def GenerateWord(request):
 			{	
 				"type": "POST",
 				"format": "JSON",
-				"description": "Process files into PDF format.",
+				"description": "Receive word template and data, write data to word template back word.",
 				"parameter1": {
 					"type": "url",
 					"url": "...",
-					"mandatory_parsing": "False (Not necessary)",
-					"filePath": "../../.. (Not necessary)"
+					"data": "<ResumeCandidateInfo>",
 				},
 				"parameter2": {
-					"file": "url",
-					"mandatory_parsing": "False (Not necessary)",
-					"filePath": "../../.. (Not necessary)"
+					"type": "file",
+					"fileContent": "(Base64<ResumeTemplate>)",
+					"data": "<ResumeCandidateInfo>",
 				},
 			}
 		]
