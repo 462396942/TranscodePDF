@@ -1,6 +1,6 @@
 from django.urls import path, re_path, include
 from RestAPI.views import (
-    swaggerAPI, fileAPI
+    fileAPI
 )
 
 # RestAPI
@@ -8,5 +8,5 @@ from RestAPI.views import (
 urlpatterns = [
 	path('file', fileAPI.GetFileAPI, name="api-file"),
 	path('file/pdf', fileAPI.GeneratePDF, name="api-file-pdf"),
+	path('file/word', fileAPI.GenerateWord, name="api-file-word"),
 ]
-

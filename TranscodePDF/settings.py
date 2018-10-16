@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5hptdt!vq^y**@r-sovrhoofacwjhz0u)6ivvt_0g!j%@nuh27'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # 'corsheaders',
     'ConvertFileFormat',
     'RestAPI',
+    'Repository',
+
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,27 @@ WSGI_APPLICATION = 'TranscodePDF.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('MYSQL_HOST'),
+        'PORT': os.getenv('MYSQL_PORT'),
+    }
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'check_md5',
+#         'USER': 'check_md5',
+#         'PASSWORD': 'check_md5',
+#         'HOST': '10.30.0.41',
+#         'PORT': '3306',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -118,6 +141,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+NGINX_MIRROR_ADDRESS = os.getenv('NGINX_MIRROR_ADDRESS')
+NGINX_UOLOAD_ADDRESS = os.path.join(NGINX_MIRROR_ADDRESS,"upload")
+
+
 # CORS Configuration
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True

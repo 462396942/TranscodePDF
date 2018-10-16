@@ -1,0 +1,33 @@
+version: '3'
+services:
+    transcode:
+        image: slzcc/django:transcode-pdf-uwsgi-v6
+        container_name: transcode
+        ports:
+          - 8089:8089
+        environment:
+            MYSQL_DATABASE: resumec
+            MYSQL_USER: resumec
+            MYSQL_PASSWORD: resumec
+            MYSQL_ROOT_USER: root
+            MYSQL_ROOT_PASSWORD: example.org
+            MYSQL_HOST: mysql
+            MYSQL_PORT: 3306
+            NGINX_MIRROR_ADDRESS: "http://47.95.219.151/"
+            TZ: Asia/Shanghai
+        hostname: "example.org"
+        depends_on:
+           - mysql
+    mysql:
+        image: slzcc/mysql:5.6-custom
+        environment:
+            MYSQL_ROOT_PASSWORD: example.org
+            MYSQL_DATABASE: resumec
+            MYSQL_USER: resumec
+            MYSQL_PASSWORD: resumec
+            TZ: Asia/Shanghai
+        container_name: transcode-mysql
+        volumes:
+          - mysql:/var/lib/mysql:rw
+volumes:
+    mysql:
