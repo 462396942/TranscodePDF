@@ -27,12 +27,12 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 	if os.path.isfile(sourcefile):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
-			ret = upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
+			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 			print(ret)
 			return ret
 		elif os.path.splitext(os.path.basename(sourcefile))[1] in [".html"]:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
-			ret = upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
+			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 			print(ret)
 			return ret
 
