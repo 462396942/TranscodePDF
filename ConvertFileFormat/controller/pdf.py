@@ -98,9 +98,11 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	# 生成 PDF
 	if filePath:
 		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(filePath))
+		print(response)
 		ret = json.loads(response)
 	else:
 		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
+		print(response)
 		ret = json.loads(response)
 
 	# 写入数据库
