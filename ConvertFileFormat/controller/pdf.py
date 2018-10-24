@@ -63,10 +63,10 @@ def CheckExistedPDF(url):
 def CheckLocalPDF(Path):
 
 	FileType = checkFileType.filetype(Path)
-		if FileType in ["pdf"]:
-			return True
-		else:
-			return False
+	if FileType in ["pdf"]:
+		return True
+	else:
+		return False
 
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 
