@@ -161,6 +161,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 
 			source_file_data = codecs.open(temporaryFileName,'r', encoding='gbk')
 			eml_obj = email.message_from_file(source_file_data)
+			source_file_data.truncate()
 			source_file_data.close()
 
 			temporary_file=open(temporaryFileName,'wb')
