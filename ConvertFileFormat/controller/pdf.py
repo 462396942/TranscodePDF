@@ -71,7 +71,7 @@ def CheckLocalPDF(Path):
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 
 	# 检查源文件是 PDF
-	if CheckLocalPDF(Path):
+	if CheckLocalPDF(sourceFile):
 		return json.loads("This is a PDF file!")
 
 	# 源文件目录
