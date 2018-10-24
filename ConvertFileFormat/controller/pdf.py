@@ -38,7 +38,7 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 		else:
 			ret = { 
 				"status_code": "503", 
-				"description": "Support for parsing file suffixes ‘.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!", 
+				"description": "Support for parsing file suffixes '.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!", 
 				"status": "failed"
 			}
 			return json.dumps(ret)
@@ -112,6 +112,10 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 		print(response,sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
 		ret = json.loads(response)
 
+	if "status_code" in ret.keys():
+		if ret["status_code"] == "503":
+			return ret
+			
 	# 写入数据库
 	data = {
 		"file_source_md5": md5Str,
