@@ -28,12 +28,10 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
 			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
-			print(ret)
 			return ret
 		elif os.path.splitext(os.path.basename(sourcefile))[1] in [".html"]:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
 			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
-			print(ret)
 			return ret
 		else:
 			ret = { 
@@ -105,11 +103,9 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 	# 生成 PDF
 	if filePath:
 		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(filePath))
-		print(response,sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
 		ret = json.loads(response)
 	else:
 		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
-		print(response,sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
 		ret = json.loads(response)
 
 	if "status_code" in ret.keys():
@@ -162,11 +158,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 			source_file_data = codecs.open(temporaryFileName,'r', encoding='gbk')
 			eml_obj = email.message_from_file(source_file_data)
 			source_file_data.close()
-
-			clean_file_data = codecs.open(temporaryFileName,'wb', encoding='gbk')
-			clean_file_data.truncate()
-			clean_file_data.close()
-
+			temporaryFileName = temporaryFileName + ".html"
 			temporary_file=open(temporaryFileName,'wb')
 
 			for par in eml_obj.walk():
@@ -174,7 +166,9 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 				if not current_data == None:
 					temporary_file.write(par.get_payload(decode=True))
 			temporary_file.close()
-
+		elif FileType in ["html"]:
+			temporaryFileName = temporaryFileName + ".html"
+			
 		md5Str = get_FileMD5(temporaryFileName)
 
 		if not mp:
