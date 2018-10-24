@@ -154,8 +154,13 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 		if FileType in ["eml"]:
 			import codecs
 			import email
-
-			source_file_data = codecs.open(temporaryFileName,'r', encoding='gbk')
+			try:
+				source_file_data = codecs.open(temporaryFileName,'r', encoding='gbk')
+			except Exception as e:
+				# 获取文件编码
+				fileCoding = getFileCoding(sourceFile)
+				source_file_data = codecs.open(temporaryFileName,'r', encoding=fileCoding)
+			
 			eml_obj = email.message_from_file(source_file_data)
 			source_file_data.close()
 			temporaryFileName = temporaryFileName + ".html"
@@ -168,7 +173,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 			temporary_file.close()
 		elif FileType in ["html"]:
 			temporaryFileName = temporaryFileName + ".html"
-			
+
 		md5Str = get_FileMD5(temporaryFileName)
 
 		if not mp:
