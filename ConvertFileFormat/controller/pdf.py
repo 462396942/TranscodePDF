@@ -36,7 +36,7 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 			print(ret)
 			return ret
 		else:
-			return "Support for parsing file suffixes ‘.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!"
+			return json.loads("Support for parsing file suffixes ‘.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!")
 
 def getFileCoding(filePath):
 	with open(filePath, 'rb') as f:
