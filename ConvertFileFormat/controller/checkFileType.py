@@ -72,7 +72,6 @@ def bytes2hex(bytes):
 		hexstr += t
 	return hexstr.upper()
 
- 
 def filetype(filePath):
 	binfile = open(filePath, 'rb')
 	bins = binfile.read(20)
