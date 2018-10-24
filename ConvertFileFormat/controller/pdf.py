@@ -151,7 +151,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 			for par in eml_obj.walk():
 				current_data=par.get_payload(decode=True)
 				if not current_data == None:
-					current_data.write(par.get_payload(decode=True))
+					temporary_file.write(par.get_payload(decode=True))
 			temporary_file.close()
 
 		md5Str = get_FileMD5(temporaryFileName)
