@@ -35,6 +35,8 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
 			print(ret)
 			return ret
+		else:
+			return "Support for parsing file suffixes ‘.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!"
 
 def getFileCoding(filePath):
 	with open(filePath, 'rb') as f:
