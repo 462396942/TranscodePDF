@@ -60,7 +60,20 @@ def CheckExistedPDF(url):
 	else:
 		return False
 
+def CheckLocalPDF(Path):
+
+	FileType = checkFileType.filetype(Path)
+		if FileType in ["pdf"]:
+			return True
+		else:
+			return False
+
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
+
+	# 检查源文件是 PDF
+	if CheckLocalPDF(Path):
+		return json.loads("This is a PDF file!")
+
 	# 源文件目录
 	fileName=os.path.basename(url)
 	sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
