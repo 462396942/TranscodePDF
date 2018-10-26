@@ -37,25 +37,22 @@ def WriteFile(ResumeCandidateInfo, filePath):
 		# 初始化数据
 		for k, v in ResumeCandidateInfo.items():
 			if k == "BaseInfo":
-				for j, l in v.items():
-					BaseInfo[j] = str(l)
+				# 写入基础数据
+				if BaseInfo:
+					paragraph = doc.add_paragraph()
+					run = paragraph.add_run(u"基础信息")
+					run.font.name='微软雅黑'
+					run.font.size=Pt(11)
+					run.bold = True
+				for vs in sorted(v.items()):
+					paragraph = doc.add_paragraph()
+					base_key, base_value = vs[1].split("|")[0], vs[1].split("|")[1]
+					run = paragraph.add_run(base_key + ": " + str(base_value) if base_value else "")
+					run.font.name='微软雅黑'
+					run.font.size=Pt(10.5)
 			else:
 				OtherData[k] = v
 
-		# 写入基础数据
-		if BaseInfo:
-			paragraph = doc.add_paragraph()
-			run = paragraph.add_run(u"基础信息")
-			run.font.name='微软雅黑'
-			run.font.size=Pt(11)
-			run.bold = True
-
-		for k, v in BaseInfo.items():
-			if v:
-				paragraph = doc.add_paragraph()
-				run = paragraph.add_run(k + ": " + str(v) if v else "")
-				run.font.name='微软雅黑'
-				run.font.size=Pt(10.5)
 		# 换行
 		doc.add_paragraph()
 
