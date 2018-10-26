@@ -57,7 +57,6 @@ def WriteFile(ResumeCandidateInfo, filePath):
 		doc.add_paragraph()
 
 		# 写入其他数据
-
 		for k, v in OtherData.items():
 
 			paragraph = doc.add_paragraph()
