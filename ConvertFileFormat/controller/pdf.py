@@ -80,7 +80,11 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 
 	# 检查源文件是 PDF
 	if CheckLocalPDF(sourceFile):
-		ret = json.loads("This is a PDF file!")
+		ret = { 
+				"status_code": "503", 
+				"description": "This is a PDF file!", 
+				"status": "failed"
+			}
 		return ret
 
 	# 源文件目录
