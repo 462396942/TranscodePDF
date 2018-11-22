@@ -15,12 +15,16 @@ services:
             MYSQL_PORT: 3306
             NGINX_MIRROR_ADDRESS: "http://47.95.219.151/"
             TZ: Asia/Shanghai
+            # Non-generic function
+            NGF: "False"
+            NGF_PROXY_ADDRESS_1: "218.240.137.68:8093"
+            NGF_PROXY_ADDRESS_1: "cats.hydsoft.com:8093"
+            NGF_TARGET_ADDRESS: "192.168.114.17:8080"
         hostname: "example.org"
         volumes:
           - ../TranscodePDF:/TranscodePDF
         depends_on:
            - mysql
-        command: "sleep 1234567890"
     mysql:
         image: slzcc/mysql:5.6-custom
         environment:
