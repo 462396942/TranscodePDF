@@ -57,16 +57,16 @@ def WriteFile(ResumeCandidateInfo, filePath):
 		doc.add_paragraph()
 
 		# 写入其他数据
-		for k, v in OtherData.items():
-
+		for kvs in sorted(OtherData.items()):
+			long_string_key, long_string_value = kvs[1].split("$|_@")[0], kvs[1].split("$|_@")[1]
 			paragraph = doc.add_paragraph()
-			run = paragraph.add_run(k)
+			run = paragraph.add_run(long_string_key)
 			run.bold = True
 			run.font.name='微软雅黑'
 			run.font.size=Pt(11)
 
 			paragraph = doc.add_paragraph()
-			_Data = v.replace("\r", '').replace("\n\n", '\n')
+			_Data = long_string_value.replace("\r", '').replace("\n\n", '\n')
 			run = paragraph.add_run(_Data)
 			run.font.name='微软雅黑'
 			run.font.size=Pt(10.5)

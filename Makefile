@@ -1,9 +1,9 @@
 SHELL := /bin/bash
-VERSION := "10"
+VERSION := "0.3.11"
 build:
-	@docker build -t slzcc/django:transcode-pdf-uwsgi-v$(VERSION) . --no-cache
+	@docker build -t slzcc/transcode:$(VERSION) . --no-cache
 push:
-	@docker push slzcc/django:transcode-pdf-uwsgi-v$(VERSION)
+	@docker push slzcc/transcode:$(VERSION)
 set_data:
 	@docker exec -t transcode-mysql mysql -uroot -pexample.org -e "create database check_md5 character set 'UTF8';"
 	@docker exec -t transcode-mysql mysql -uroot -pexample.org -e "grant all on check_md5.* to check_md5@'%' identified by 'check_md5';"
