@@ -1,7 +1,7 @@
 version: '3'
 services:
     transcode:
-        image: slzcc/transcode:0.3.11
+        image: slzcc/transcode:0.3.12
         container_name: transcode
         ports:
           - 8089:8089

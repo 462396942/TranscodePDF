@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-VERSION := "0.3.11"
+VERSION := "0.3.12"
 build:
 	@docker build -t slzcc/transcode:$(VERSION) . --no-cache
 push:
