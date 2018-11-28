@@ -154,6 +154,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
             f.write(session.content)
 
         # 判断是否是 MIME 文件，如果是 MIME 类型文件，则进行提取原内容
+        regular = re.compile("MIME")
         try:
             with open(temporaryFileName, "r", encoding="GB18030") as f:
                 data = f.read(265)
