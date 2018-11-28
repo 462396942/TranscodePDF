@@ -153,37 +153,47 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
         with open(temporaryFileName, 'wb') as f:
             f.write(session.content)
 
-        # 判断是否是 MIME 文件，如果是 MIME 类型文件，则进行提取原内容
-        regular = re.compile("MIME")
-        try:
-            with open(temporaryFileName, "r", encoding="GB18030") as f:
-                data = f.read(265)
-            SP = re.findall(regular, data)
-            if SP:
-                import email
+         # 判断文件类型
+        FileType = checkFileType.filetype(temporaryFileName)
 
-                fp = open(temporaryFileName)
-                msg = email.message_from_file(fp)
-                with open(temporaryFileName+".html", 'wb') as f:
-                    for par in msg.walk():
-                        if not par.is_multipart():
-                            name = par.get_param("name")
-                            if name:
-                                h = email.Header.Header(name)
-                                dh = email.Header.decode_header(h)
-                                fname = dh[0][0]
-                                data = par.get_payload(decode=True)
-                                try:
-                                    f = open(fname+'_attachment.out', 'wb')
-                                except:
-                                    f = open(fname+'_attachment.out2', 'wb')
-                                f.write(data)
-                                f.close()
-                            else:
-                                f.write(par.get_payload(decode=True))
-                temporaryFileName = temporaryFileName+".html"
-        except:
-            pass
+        if FileType in ["html"]:
+            temporaryFileName = temporaryFileName + ".html"
+        else:
+            # 判断是否是 MIME 文件，如果是 MIME 类型文件，则进行提取原内容
+            regular = re.compile("MIME")
+            try:
+                with open(temporaryFileName, "r", encoding="GB18030") as f:
+                    data = f.read(265)
+                SP = re.findall(regular, data)
+                if SP:
+                    import email
+
+                    fp = open(temporaryFileName)
+                    msg = email.message_from_file(fp)
+                    fp.close()
+
+                    temporaryFileName = temporaryFileName+".html"
+
+                    with open(temporaryFileName, 'wb') as f:
+                        for par in msg.walk():
+                            if not par.is_multipart():
+                                name = par.get_param("name")
+                                if name:
+                                    h = email.Header.Header(name)
+                                    dh = email.Header.decode_header(h)
+                                    fname = dh[0][0]
+                                    data = par.get_payload(decode=True)
+                                    try:
+                                        f = open(fname+'_attachment.out', 'wb')
+                                    except:
+                                        f = open(fname+'_attachment.out2', 'wb')
+                                    f.write(data)
+                                    f.close()
+                                else:
+                                    f.write(par.get_payload(decode=True))
+                    
+            except:
+                pass
 
             # 旧的处理 eml 文件数据类型
             # try:
@@ -203,13 +213,8 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
             #   if not current_data == None:
             #       temporary_file.write(par.get_payload(decode=True))
             # temporary_file.close()
-
-        # 判断文件类型
-        FileType = checkFileType.filetype(temporaryFileName)
-
-        if FileType in ["html"]:
-            temporaryFileName = temporaryFileName + ".html"
-
+       
+        # 获取文件 MD5 值
         md5Str = get_FileMD5(temporaryFileName)
 
         if not mp:
