@@ -22,11 +22,17 @@ compiles_general = [
 
 compiles_enter = [
     re.compile(" \n\n\n*"),
-    re.compile(" \n\n "),
     re.compile(" \n\n\n* "),
-    re.compile("\n\n*"),
+    re.compile("\n\n\n* "),
+    re.compile("\n\n\n*"),
     re.compile("\n \n"),
     re.compile("\n \n \n*"),
+    re.compile(" \n \n"),
+    re.compile(" \n \n \n*"),
+    re.compile(" \n \n "),
+    re.compile(" \n \n \n* "),
+    re.compile("\n \n "),
+    re.compile("\n \n \n* "),
 ]
 
 compiles_two_n = [
@@ -104,7 +110,7 @@ def WriteFile(ResumeCandidateInfo, filePath):
                 _Data = re.sub(i, "\n", _Data)
             for i in compiles_two_n:
                 _Data = re.sub(i, "\n", _Data)
-                
+
             run = paragraph.add_run(_Data)
             run.font.name='微软雅黑'
             run.font.size=Pt(10.5)
