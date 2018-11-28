@@ -87,7 +87,7 @@ def WriteFile(ResumeCandidateInfo, filePath):
                 if LastTime == i:
                     pass
                 else:
-                    Content += i
+                    Content += "\n"+i
                     LastTime = i
 
             _Data = Content
