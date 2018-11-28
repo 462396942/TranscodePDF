@@ -60,6 +60,15 @@ def GeneratePDF(request):
 
         # Initialization Data
         ReceiveData = request.POST
+
+        # Echo Client Input Data
+        if ECHO_INPUT:
+            print("************************************************************************")
+            print(request.POST.get("data"))
+            print("************************************************************************")
+            print(json.loads(request.POST.get("data")))
+            print("************************************************************************")
+            
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
         
         if transportType == "content":
