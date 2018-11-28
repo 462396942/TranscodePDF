@@ -95,7 +95,9 @@ def WriteFile(ResumeCandidateInfo, filePath):
             run.font.name='微软雅黑'
             run.font.size=Pt(10.5)
 
-            doc.add_paragraph()
+            # Check Whether there is a newline at the end
+            if re.findall("\s$", _Data):
+                doc.add_paragraph()
 
         # 保存文件
         doc.save(newWordFilePath)
