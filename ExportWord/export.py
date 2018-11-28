@@ -96,7 +96,7 @@ def WriteFile(ResumeCandidateInfo, filePath):
             run.font.size=Pt(10.5)
 
             # Check Whether there is a newline at the end
-            if re.findall("\s$", _Data):
+            if not re.findall("\s$", _Data):
                 doc.add_paragraph()
 
         # 保存文件
