@@ -28,7 +28,7 @@ compiles_enter = [
 ]
 
 compiles_two_n = [
-    re.compile("\n\n")
+    re.compile("\n\n"),
     re.compile("\n \n")
 ]
 
