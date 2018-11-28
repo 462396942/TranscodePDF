@@ -164,7 +164,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 
                 fp = open(temporaryFileName)
                 msg = email.message_from_file(fp)
-                with open(filename+".html", 'wb') as f:
+                with open(temporaryFileName+".html", 'wb') as f:
                     for par in msg.walk():
                         if not par.is_multipart():
                             name = par.get_param("name")
@@ -181,7 +181,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
                                 f.close()
                             else:
                                 f.write(par.get_payload(decode=True))
-                    temporaryFileName = filename+".html"
+                    temporaryFileName = temporaryFileName+".html"
         except:
             pass
 
