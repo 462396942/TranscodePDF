@@ -181,7 +181,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
                                 f.close()
                             else:
                                 f.write(par.get_payload(decode=True))
-                    temporaryFileName = temporaryFileName+".html"
+                temporaryFileName = temporaryFileName+".html"
         except:
             pass
 
