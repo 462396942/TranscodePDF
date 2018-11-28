@@ -147,8 +147,6 @@ def GenerateWord(request):
             print("************************************************************************")
             print(request.POST.get("data"))
             print("************************************************************************")
-            print(json.loads(request.POST.get("data")))
-            print("************************************************************************")
 
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
         if type(ReceiveData["data"]) == list:
