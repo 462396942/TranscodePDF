@@ -11,19 +11,26 @@ from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.text import WD_LINE_SPACING
 
-compiles = [
+compiles_general = [
     re.compile("^\s*"),
     re.compile("\s*$"),
-    re.compile(" \n\n"),
-    re.compile(" \n\n\n"),
-    re.compile(" \n\n\n\n*"),
-    re.compile(" \n\n "),
-    re.compile(" \n\n\n "),
-    re.compile(" \n\n\n\n* "),
-    re.compile("\n\n"),
-    re.compile("\n\n\n*"),
     re.compile("\t\t"),
     re.compile("\t\t\t*"),
+    re.compile("\t \t"),
+    re.compile("\t \t \t*"),
+]
+
+compiles_enter = [
+    re.compile(" \n\n\n*"),
+    re.compile(" \n\n "),
+    re.compile(" \n\n\n* "),
+    re.compile("\n\n*"),
+    re.compile("\n \n"),
+    re.compile("\n \n \n*"),
+]
+
+compiles_two_n = [
+    re.compile("\n\n")
 ]
 
 def WriteFile(ResumeCandidateInfo, filePath):
@@ -91,9 +98,13 @@ def WriteFile(ResumeCandidateInfo, filePath):
             # _Data = re.sub("\s*$", "", _Data)
 
             # 去除内容不合法换行符
-            for i in compiles:
+            for i in compiles_general:
                 _Data = re.sub(i, "", _Data)
-
+            for i in compiles_enter:
+                _Data = re.sub(i, "\n", _Data)
+            for i in compiles_two_n:
+                _Data = re.sub(i, "\n", _Data)
+                
             run = paragraph.add_run(_Data)
             run.font.name='微软雅黑'
             run.font.size=Pt(10.5)
