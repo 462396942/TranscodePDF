@@ -16,7 +16,6 @@ compiles_general = [
     re.compile("\s*$")
 ]
 
-
 def WriteFile(ResumeCandidateInfo, filePath):
 
     fileName = str(uuid.uuid1()) + ".docx"
@@ -85,7 +84,7 @@ def WriteFile(ResumeCandidateInfo, filePath):
             LastTime = ""
             Content = ""
             for i in _Data_LIST:
-                if LastTime = i:
+                if LastTime == i:
                     pass
                 else:
                     Content += i
