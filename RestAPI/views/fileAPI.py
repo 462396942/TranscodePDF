@@ -64,9 +64,9 @@ def GeneratePDF(request):
         # Echo Client Input Data
         if ECHO_INPUT:
             print("************************************************************************")
-            print("data: ", request.POST.get("data"))
+            print("Data: ", ReceiveData)
             print("************************************************************************")
-            print("All: ", request.POST)
+            print("Request: ", request.POST)
             print("************************************************************************")
 
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
