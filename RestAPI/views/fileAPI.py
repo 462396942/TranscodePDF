@@ -66,8 +66,6 @@ def GeneratePDF(request):
             print("************************************************************************")
             print(request.POST.get("data"))
             print("************************************************************************")
-            print(json.loads(request.POST.get("data")))
-            print("************************************************************************")
             
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
         
@@ -146,6 +144,8 @@ def GenerateWord(request):
         if ECHO_INPUT:
             print("************************************************************************")
             print(request.POST.get("data"))
+            print("************************************************************************")
+            print(json.loads(request.POST.get("data")))
             print("************************************************************************")
 
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
