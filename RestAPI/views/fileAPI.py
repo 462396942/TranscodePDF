@@ -8,7 +8,8 @@ import os, time, requests, json, datetime, re, shutil, urllib, uuid, base64
 from django.utils.safestring import mark_safe
 from ExportWord import export
 
-NGF = True if os.getenv('NGF') == "True" else False
+NGF = True if os.getenv('NGF').lower() == "True".lower() else False
+ECHO_INPUT = True if os.getenv('ECHO_INPUT').lower() == "True".lower() else False
 
 def GetFileAPI(request):
     ret = {
@@ -131,6 +132,15 @@ def GenerateWord(request):
         
         # Initialization Data
         ReceiveData = request.POST
+
+        # Echo Client Input Data
+        if ECHO_INPUT:
+            print("************************************************************************")
+            print(request.POST.get("data"))
+            print("************************************************************************")
+            print(json.loads(request.POST.get("data")))
+            print("************************************************************************")
+
         transportType = ReceiveData["type"] if "type" in ReceiveData else ""
         if type(ReceiveData["data"]) == list:
             ResumeCandidateInfo = json.loads(ReceiveData["data"][0]) if "data" in ReceiveData else {}

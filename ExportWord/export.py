@@ -13,24 +13,9 @@ from docx.enum.text import WD_LINE_SPACING
 
 compiles_general = [
     re.compile("^\s*"),
-    re.compile("\s*$"),
-    re.compile("\t\t"),
-    re.compile("\t\t\t*"),
-    re.compile("\t \t"),
-    re.compile("\t \t \t*"),
+    re.compile("\s*$")
 ]
 
-compiles_enter = [
-    re.compile("\n\n\n*"),
-    re.compile("\n \n"),
-    re.compile("\n\ *\n"),
-    re.compile("\n \n\ \n*"),
-]
-
-compiles_two_n = [
-    re.compile("\n\n"),
-    re.compile("\n \n")
-]
 
 def WriteFile(ResumeCandidateInfo, filePath):
 
@@ -88,22 +73,25 @@ def WriteFile(ResumeCandidateInfo, filePath):
             run.font.size=Pt(11)
 
             paragraph = doc.add_paragraph()
-            _Data = long_string_value.replace("\r", '').replace("\n\n", '\n')
+            # _Data = long_string_value.replace("\r", '').replace("\n\n", '\n')
+            _Data = long_string_value
 
-            # 去除头部换行符
-            # _Data = re.sub("^\s*", "", _Data)
-
-            # 去除尾部换行符
-            # _Data = re.sub("\s*$", "", _Data)
-
-            # 去除内容不合法换行符
+            # 去除尾部换行符, 去除头部换行符
             for i in compiles_general:
                 _Data = re.sub(i, "", _Data)
-            for i in compiles_enter:
-                _Data = re.sub(i, "\n", _Data)
-            for i in compiles_two_n:
-                _Data = re.sub(i, "\n", _Data)
 
+            # 去除内容不合法换行符
+            _Data_LIST = _Data.splitlines()
+            LastTime = ""
+            Content = ""
+            for i in _Data_LIST:
+                if LastTime = i:
+                    pass
+                else:
+                    Content += i
+                    LastTime = i
+
+            _Data = Content
             run = paragraph.add_run(_Data)
             run.font.name='微软雅黑'
             run.font.size=Pt(10.5)
