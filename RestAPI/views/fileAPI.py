@@ -64,7 +64,7 @@ def GeneratePDF(request):
         # Echo Client Input Data
         if ECHO_INPUT:
             print("************************************************************************")
-            print("data: "request.POST.get("data"))
+            print("data: ", request.POST.get("data"))
             print("************************************************************************")
             print("All: ", request.POST)
             print("************************************************************************")
