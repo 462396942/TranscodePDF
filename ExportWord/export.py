@@ -21,22 +21,15 @@ compiles_general = [
 ]
 
 compiles_enter = [
-    re.compile(" \n\n\n*"),
-    re.compile(" \n\n\n* "),
-    re.compile("\n\n\n* "),
     re.compile("\n\n\n*"),
     re.compile("\n \n"),
-    re.compile("\n \n \n*"),
-    re.compile(" \n \n"),
-    re.compile(" \n \n \n*"),
-    re.compile(" \n \n "),
-    re.compile(" \n \n \n* "),
-    re.compile("\n \n "),
-    re.compile("\n \n \n* "),
+    re.compile("\n\ *\n"),
+    re.compile("\n \n\ \n*"),
 ]
 
 compiles_two_n = [
     re.compile("\n\n")
+    re.compile("\n \n")
 ]
 
 def WriteFile(ResumeCandidateInfo, filePath):
