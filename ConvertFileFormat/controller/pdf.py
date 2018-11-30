@@ -190,7 +190,12 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
                                     f.write(data)
                                     f.close()
                                 else:
-                                    f.write(par.get_payload(decode=True))
+                                    _datas = par.get_payload(decode=True)
+                                    try:
+                                        f.write(_datas.decode("GB18030").encode("GB18030"))
+                                    except:
+                                        f.write(_datas.decode("UTF-8").encode("UTF-8"))
+
                     
             except:
                 pass
