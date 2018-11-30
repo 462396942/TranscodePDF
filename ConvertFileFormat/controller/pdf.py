@@ -168,7 +168,7 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
                 if SP:
                     import email
 
-                    fp = open(temporaryFileName)
+                    fp = open(temporaryFileName, "r", encoding="GB18030")
                     msg = email.message_from_file(fp)
                     fp.close()
 
