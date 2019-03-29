@@ -1,6 +1,6 @@
-django
-python-docx
-uwsgi
-requests
-django-cors-headers
+django==2.1.2
+python-docx==0.8.7
+uwsgi==2.0.17.1
+requests==2.20.0
+django-cors-headers==2.4.0
 chardet
