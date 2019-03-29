@@ -1,11 +1,12 @@
 FROM slzcc/wkhtmltopdf:liboffice
-        
-RUN	pip3 install --upgrade pip && \
-    git clone -b master https://gitee.com/shileizcc_admin/TranscodePDF.git /TranscodePDF
 
-RUN pip install -r /TranscodePDF/package.txt
+RUN	pip3 install --upgrade pip && \
+    mkdir /TranscodePDF
 
 WORKDIR /TranscodePDF
+COPY . .
+
+RUN pip install -r package.txt
 
 EXPOSE 8089
 
