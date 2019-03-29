@@ -3,5 +3,4 @@ python-docx
 uwsgi
 requests
 django-cors-headers
-pymysql
 chardet

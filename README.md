@@ -1,4 +1,4 @@
-# TranscodePDF
+# TranscodePDF 
 
 详细的使用请先通过 Docker Compose 启动服务：
 ```
@@ -7,8 +7,8 @@ $ docker-compose up -d
 
 ### Transcode in PDF
 如果需要解析成 PDF，请参照 TranscodePDFClient.py 文件代码执行所需操作。
-主要说明的是目前支持传递 html/txt/docx/doc 文件格式转码 PDF。
-(由于自身服务的需要，此方法配合了 MySQl 作为存储，如果检测文件 MD5 值已经记录在内，则不进行解析，并返回解析后保存的地址，此服务后端存储需要配合[Nginx Upload](https://gitee.com/shileizcc_admin/Django-Upload-Files/tree/nginx_upload/), 可传递 `mandatory_parsing` 参数强制解析.) 
+主要说明的是目前支持绝大多数文件格式转码 PDF。请参源码中的示例，传递一个文件后，服务端以 base64 编码格式返回给客户端，由客户端重新写入本地。
+[Nginx Upload](https://gitee.com/shileizcc_admin/Django-Upload-Files/tree/nginx_upload/)
 PDF 支持两种方式，url 与 content，具体请参照示例。
 
 ### Transcode in Word
