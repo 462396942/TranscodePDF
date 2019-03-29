@@ -58,6 +58,7 @@ def typeList():
 		'504b0304140006000800':'docx',
 		'd0cf11e0a1b11ae10000':'wps',
 		'6431303a637265617465':'torrent',
+		'6e74656e742d54797065':'eml',
 		}
  
  
@@ -71,7 +72,6 @@ def bytes2hex(bytes):
 		hexstr += t
 	return hexstr.upper()
 
- 
 def filetype(filePath):
 	binfile = open(filePath, 'rb')
 	bins = binfile.read(20)

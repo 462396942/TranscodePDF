@@ -125,7 +125,10 @@ def GenerateWord(request):
 		# Initialization Data
 		ReceiveData = request.POST
 		transportType = ReceiveData["type"] if "type" in ReceiveData else ""
-		ResumeCandidateInfo = json.loads(ReceiveData["data"]) if "data" in ReceiveData else {}
+		if type(ReceiveData["data"]) == list:
+			ResumeCandidateInfo = json.loads(ReceiveData["data"][0]) if "data" in ReceiveData else {}
+		else:
+			ResumeCandidateInfo = json.loads(ReceiveData["data"]) if "data" in ReceiveData else {}
 
 		if transportType == "file":
 

@@ -27,5 +27,5 @@ def upload(url=None, target_file_path=None, path=None):
 
 	data = {"custom_path": path}
 	session = requests.post(url, data=data, files=files)
-	print("session:", session)
+	# print("session:", session)
 	return session.text

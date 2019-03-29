@@ -27,11 +27,19 @@ def FileToPDF(sourcefile, tregetfile, fileCoding, uploadPath):
 	if os.path.isfile(sourcefile):
 		if os.path.splitext(os.path.basename(sourcefile))[1] in [".doc", ".docx", ".txt"]:
 			pdfconv._convert_unoconv2pdf(sourcefile, tregetfile)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
+			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
+			return ret
 		elif os.path.splitext(os.path.basename(sourcefile))[1] in [".html"]:
 			pdfconv._convert_wkhtmltopdf(sourcefile, tregetfile, fileCoding)
-			return upload(url=conf.settings.NGINX_UOLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
-
+			ret = upload(url=conf.settings.NGINX_UPLOAD_ADDRESS, target_file_path=tregetfile, path=uploadPath)
+			return ret
+		else:
+			ret = { 
+				"status_code": "503", 
+				"description": "Support for parsing file suffixes '.doc, .docx, .txt, .html', Please modify the correct file suffix after re-upload!", 
+				"status": "failed"
+			}
+			return json.dumps(ret)
 
 def getFileCoding(filePath):
 	with open(filePath, 'rb') as f:
@@ -60,7 +68,25 @@ def CheckExistedPDF(url):
 	else:
 		return False
 
+def CheckLocalPDF(Path):
+
+	FileType = checkFileType.filetype(Path)
+	if FileType in ["pdf"]:
+		return True
+	else:
+		return False
+
 def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
+
+	# 检查源文件是 PDF
+	if CheckLocalPDF(sourceFile):
+		ret = { 
+				"status_code": "503", 
+				"description": "This is a PDF file!", 
+				"status": "failed"
+			}
+		return ret
+
 	# 源文件目录
 	fileName=os.path.basename(url)
 	sourceFilePath = os.path.join(conf.settings.BASE_DIR, 'static', 'temporary', fileName)
@@ -86,6 +112,10 @@ def _TranscodePDF(url, md5Str, sourceFile, filePath=None):
 		response = FileToPDF(sourceFile, targetFilePath, fileCoding, os.path.join(sourceFileSubPath))
 		ret = json.loads(response)
 
+	if "status_code" in ret.keys():
+		if ret["status_code"] == "503":
+			return ret
+			
 	# 写入数据库
 	data = {
 		"file_source_md5": md5Str,
@@ -123,11 +153,30 @@ def main(transport_type, fileName=None, fileContent=None, fileMD5=None, filePath
 		with open(temporaryFileName, 'wb') as f:
 			f.write(session.content)
 
-		# 判断文件类型(格式杂乱不建议使用)
-		# FileType = checkFileType.filetype(temporaryFileName)
-		# if FileType or not FileType in ["doc", "docx", "html"]:
-		# 	ret = {"status": "failed", "status_code": "503", "description": "Unsupported parsing file format '{}'.".format(FileType)}
-		# 	return ret
+		# 判断文件类型, 如果是 eml 则解析原内容
+		FileType = checkFileType.filetype(temporaryFileName)
+		if FileType in ["eml"]:
+			import codecs
+			import email
+			try:
+				source_file_data = codecs.open(temporaryFileName,'r', encoding='gbk')
+			except Exception as e:
+				# 获取文件编码
+				fileCoding = getFileCoding(sourceFile)
+				source_file_data = codecs.open(temporaryFileName,'r', encoding=fileCoding)
+			
+			eml_obj = email.message_from_file(source_file_data)
+			source_file_data.close()
+			temporaryFileName = temporaryFileName + ".html"
+			temporary_file=open(temporaryFileName,'wb')
+
+			for par in eml_obj.walk():
+				current_data=par.get_payload(decode=True)
+				if not current_data == None:
+					temporary_file.write(par.get_payload(decode=True))
+			temporary_file.close()
+		elif FileType in ["html"]:
+			temporaryFileName = temporaryFileName + ".html"
 
 		md5Str = get_FileMD5(temporaryFileName)
 
