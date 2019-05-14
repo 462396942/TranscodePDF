@@ -15,7 +15,6 @@ services:
             MYSQL_PORT: 3306
             NGINX_MIRROR_ADDRESS: "http://47.95.219.151/"
             TZ: Asia/Shanghai
-            # Non-generic function
             NGF: "False"
             NGF_PROXY_ADDRESS_1: "218.240.137.68:8093"
             NGF_PROXY_ADDRESS_1: "cats.hydsoft.com:8093"
