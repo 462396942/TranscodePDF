@@ -80,14 +80,23 @@ services:
             MYSQL_PORT: 3306
             NGINX_MIRROR_ADDRESS: "http://47.95.219.151/"
             TZ: Asia/Shanghai
-            NGF: "False"
+            NGF: "True"
             NGF_PROXY_ADDRESS_1: "218.240.137.68:8093"
             NGF_PROXY_ADDRESS_1: "cats.hydsoft.com:8093"
             NGF_TARGET_ADDRESS: "192.168.114.17:8080"
             ECHO_INPUT: "True"
 ...
 ```
+`MYSQL_ROOT*`：历史遗留问题，可以不用管，主要为了解决准备数据库没有准备库，而通过脚本生成库的方案，但是没有更新目前还存在问题。
 
+`NGINX_MIRROR_ADDRESS`：Upload Server 服务器的前端地址
+
+`NGF`：是否使用内网地址转换，因为目前服务器存在一个问题，通过 NAT 方式转发端口暴露在单独的公网上，当服务自身访问这个公网时是被拒绝的，所以把需要通过公网访问的请求强制转换为内网，有三个子参数：
+* `NGF_TARGET_ADDRESS`： 最终被转换的地址
+* `NGF_PROXY_ADDRESS_1`：如果判定请求时此地址，则转换为 `NGF_TARGET_ADDRESS`
+* `NGF_PROXY_ADDRESS_2`：如果判定请求时此地址，则转换为 `NGF_TARGET_ADDRESS`
+
+`ECHO_INPUT`：主要用于测试，测试客户端发送过来需要写入 Word 数据打印出来，甄别是否有格式错误。
 
 [Wiki Docs Url](https://wiki.shileizcc.com/confluence/display/CASE/Django+TranscodePDF)
 | Wiki 暂未更新
