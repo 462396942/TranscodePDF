@@ -56,7 +56,8 @@ Template 支持两种方式，url 与 content(base64)，具体请参照示例。
 数据会分成两部分，BaseInfo 数据前部分，另一部分有分隔符规定具体格式为：
 ```
 项目经验$|_@内容体...
-``` 
+```
+
 `项目经验`： 阶段标题。
 `$|_@`：分隔符。
 `内容体`：具体的内容。
@@ -87,6 +88,7 @@ services:
             ECHO_INPUT: "True"
 ...
 ```
+
 `MYSQL_ROOT*`：历史遗留问题，可以不用管，主要为了解决准备数据库没有准备库，而通过脚本生成库的方案，但是没有更新目前还存在问题。
 
 `NGINX_MIRROR_ADDRESS`：Upload Server 服务器的前端地址
@@ -97,6 +99,17 @@ services:
 * `NGF_PROXY_ADDRESS_2`：如果判定请求时此地址，则转换为 `NGF_TARGET_ADDRESS`
 
 `ECHO_INPUT`：主要用于测试，测试客户端发送过来需要写入 Word 数据打印出来，甄别是否有格式错误。
+
+目前预正式环境使用的启动方式：
+```
+$ docker network create -d overlay cats
+$ docker service create --detach --name cats-transcode --network cats --with-registry-auth --publish published=8089,target=8089,mode=host -e MYSQL_DATABASE=transcode_pdf -e MYSQL_USER=transcode_pdf -e MYSQL_PASSWORD=transcode_pdf -e MYSQL_ROOT_USER=root -e MYSQL_ROOT_PASSWORD=hydsoft.com -e MYSQL_HOST="192.168.114.170" -e MYSQL_PORT=3307 -e NGINX_MIRROR_ADDRESS="http://192.168.114.170:8876/" -e TZ=sia/Shanghai -e NGF="true" -e NGF_PROXY_ADDRESS_1="192.168.114.170" -e NGF_PROXY_ADDRESS_1="xxx.hydcloud.wan" -e NGF_TARGET_ADDRESS="xxx.hydcloud.wan:8091" -e ECHO_INPUT="True" slzcc/transcode:0.3.15
+```
+### 错误说明
+如出现如下错误：
+
+可忽略，主要测试功能无误即可，此问题是 uwsgi 启动时引发的一个内部错误。
+![image2](doc/2.png)
 
 [Wiki Docs Url](https://wiki.shileizcc.com/confluence/display/CASE/Django+TranscodePDF)
 | Wiki 暂未更新
