@@ -11,6 +11,11 @@
 文档地址：[Wiki](https://wiki.shileizcc.com/confluence/display/CASE/Django+Nginx+Upload)
 
 ## Start TranscodePDF
+获取源码:
+```
+$ git clone -b database_model https://gitee.com/shileizcc_admin/TranscodePDF.git
+```
+
 详细的使用请先通过 Docker Compose 启动服务：
 ```
 $ docker-compose up -d
