@@ -109,7 +109,7 @@ services:
 目前预正式环境使用的启动方式：
 ```
 $ docker network create -d overlay cats
-$ docker service create --detach --name cats-transcode --network cats --with-registry-auth --publish published=8089,target=8089,mode=host -e MYSQL_DATABASE=transcode_pdf -e MYSQL_USER=transcode_pdf -e MYSQL_PASSWORD=transcode_pdf -e MYSQL_ROOT_USER=root -e MYSQL_ROOT_PASSWORD=hydsoft.com -e MYSQL_HOST="192.168.114.170" -e MYSQL_PORT=3307 -e NGINX_MIRROR_ADDRESS="http://192.168.114.170:8876/" -e TZ=sia/Shanghai -e NGF="true" -e NGF_PROXY_ADDRESS_1="192.168.114.170" -e NGF_PROXY_ADDRESS_1="xxx.hydcloud.wan" -e NGF_TARGET_ADDRESS="xxx.hydcloud.wan:8091" -e ECHO_INPUT="True" slzcc/transcode:0.3.15
+$ docker service create --detach --name cats-transcode --network cats --with-registry-auth --publish published=8089,target=8089,mode=host -e MYSQL_DATABASE=transcode_pdf -e MYSQL_USER=transcode_pdf -e MYSQL_PASSWORD=transcode_pdf -e MYSQL_ROOT_USER=root -e MYSQL_ROOT_PASSWORD=domain.com -e MYSQL_HOST="192.168.114.170" -e MYSQL_PORT=3307 -e NGINX_MIRROR_ADDRESS="http://192.168.114.170:8876/" -e TZ=sia/Shanghai -e NGF="true" -e NGF_PROXY_ADDRESS_1="192.168.114.170" -e NGF_PROXY_ADDRESS_1="xxx.domain.wan" -e NGF_TARGET_ADDRESS="xxx.domain.wan:8091" -e ECHO_INPUT="True" slzcc/transcode:0.3.15
 ```
 ### 错误说明
 如出现如下错误：
