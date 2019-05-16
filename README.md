@@ -111,11 +111,83 @@ services:
 $ docker network create -d overlay cats
 $ docker service create --detach --name cats-transcode --network cats --with-registry-auth --publish published=8089,target=8089,mode=host -e MYSQL_DATABASE=transcode_pdf -e MYSQL_USER=transcode_pdf -e MYSQL_PASSWORD=transcode_pdf -e MYSQL_ROOT_USER=root -e MYSQL_ROOT_PASSWORD=domain.com -e MYSQL_HOST="192.168.114.170" -e MYSQL_PORT=3307 -e NGINX_MIRROR_ADDRESS="http://192.168.114.170:8876/" -e TZ=sia/Shanghai -e NGF="true" -e NGF_PROXY_ADDRESS_1="192.168.114.170" -e NGF_PROXY_ADDRESS_1="xxx.domain.wan" -e NGF_TARGET_ADDRESS="xxx.domain.wan:8091" -e ECHO_INPUT="True" slzcc/transcode:0.3.15
 ```
+
 ### 错误说明
 如出现如下错误：
 
 可忽略，主要测试功能无误即可，此问题是 uwsgi 启动时引发的一个内部错误。
 ![image2](doc/2.png)
+
+
+## 完整的启动
+可以使用完全组合好的服务进行启动, 只需要把对应的 IP 地址修改成本机 IP 即可：
+```
+version: '3'
+services:
+    upload_backend:
+        image: slzcc/django:upload-uwsgi-v5
+        ports:
+          - 8878:8878
+        environment:
+          - UPLOAD_FILE_PATH=/storage/
+          - NGINX_MIRROR_URL=http://本机IP:8888/
+          - NGINX_MIRROR_STORAGE_PATH=firmware/resume
+          - REMOVE_SOURCE_FILE_SETUP=False
+          - USE_TIEM_SUB_DIRECTORY=True
+
+        volumes:
+          - nginx-upload:/tmp/nginx_upload
+          - mirror:/storage
+
+    upload_frontend:
+        image: slzcc/nginx:upload-conf-v3
+        ports:
+          - 8888:80
+        environment:
+          - UPLOAD_BACKEND_ADDRESS=http://upload_backend:8878
+          - NGINX_MIRROR_HOME=/mirror
+        volumes:
+          - nginx-upload:/tmp/nginx_upload
+          - mirror:/mirror
+    transcode:
+        image: slzcc/transcode:0.3.15
+        container_name: transcode
+        ports:
+          - 8089:8089
+        environment:
+            MYSQL_DATABASE: resumec
+            MYSQL_USER: resumec
+            MYSQL_PASSWORD: resumec
+            MYSQL_ROOT_USER: root
+            MYSQL_ROOT_PASSWORD: example.org
+            MYSQL_HOST: mysql
+            MYSQL_PORT: 3306
+            NGINX_MIRROR_ADDRESS: "http://本机IP:8888/"
+            TZ: Asia/Shanghai
+            NGF: "False"
+            NGF_PROXY_ADDRESS_1: ""
+            NGF_PROXY_ADDRESS_1: ""
+            NGF_TARGET_ADDRESS: ""
+            ECHO_INPUT: "True"
+        hostname: "example.org"
+        depends_on:
+           - mysql
+    mysql:
+        image: slzcc/mysql:5.6-custom
+        environment:
+            MYSQL_ROOT_PASSWORD: example.org
+            MYSQL_DATABASE: resumec
+            MYSQL_USER: resumec
+            MYSQL_PASSWORD: resumec
+            TZ: Asia/Shanghai
+        container_name: transcode-mysql
+        volumes:
+          - mysql:/var/lib/mysql:rw
+volumes:
+    nginx-upload:
+    mirror:
+    mysql:
+```
 
 [Wiki Docs Url](https://wiki.shileizcc.com/confluence/display/CASE/Django+TranscodePDF)
 | Wiki 暂未更新
